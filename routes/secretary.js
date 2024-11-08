@@ -2,10 +2,12 @@ import express from 'express';
 import mongoose, { mongo } from 'mongoose';
 import '../models/Consult.js';
 import '../models/Professional.js';
+import '../models/User.js';
 
 const router = express.Router();
 const Consult = mongoose.model('Consult');
 const Professional = mongoose.model('Professional');
+const User = mongoose.model('User');
 
 router.get('/consult', async (req, res) => {
   const consults = await Consult.find({})
@@ -25,11 +27,22 @@ router.post('/consult', async (req, res) => {
       .then((professional) => {
         professional.consults.push(consult);
         professional.save();
-        console.log('Consult registered');
-        res.status(200).end();
+
+        User.findOne({ _id: req.body.user })
+          .then((user) => {
+            user.consult = consult._id;
+            user.save();
+            console.log('Consult registered');
+            res.status(200).end();
+          })
+          .catch((err) => {
+            console.log('User doesnt exist ' + err);
+            res.status(400).end();
+          });
       })
       .catch((err) => {
         console.log('Professional doesnt exist ' + err);
+        res.status(400).end();
       });
   });
 });

@@ -22,6 +22,11 @@ const UserSchema = Schema({
     type: String,
     require: true,
   },
+
+  consult: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Consult',
+  },
 });
 
 mongoose.model('User', UserSchema);
