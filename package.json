@@ -7,5 +7,23 @@
     "nodemon": "^3.1.7",
     "remove": "^0.1.5"
   },
-  "type": "module"
+  "type": "module",
+  "name": "agenda-node",
+  "version": "1.0.0",
+  "description": "api agenda",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RyanYSG/agenda-node.git"
+  },
+  "author": "Ryan Yuri",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RyanYSG/agenda-node/issues"
+  },
+  "homepage": "https://github.com/RyanYSG/agenda-node#readme"
 }
