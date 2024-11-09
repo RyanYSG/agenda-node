@@ -7,10 +7,22 @@ const router = express.Router();
 const User = mongoose.model('User');
 const Consult = mongoose.model('Consult');
 
+router.get('/', async (req, res) => {
+  await User.findOne({ _id: req.body.id })
+    .populate('consult')
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.log('User doesnt exist ' + err);
+      res.status(400).end();
+    });
+});
+
 router.post('/', async (req, res) => {
   const newUser = {
     full_name: req.body.full_name,
-    emai: req.body.email,
+    email: req.body.email,
     phone_number: req.body.phone_number,
     password: req.body.password,
   };
@@ -23,6 +35,27 @@ router.post('/', async (req, res) => {
     })
     .catch((err) => {
       console.log('Error registering: ' + err);
+      res.status(400).end();
+    });
+});
+
+router.put('/', async (req, res) => {
+  await User.findOneAndUpdate(
+    { _id: req.body.id },
+    {
+      full_name: req.body.full_name,
+      email: req.body.email,
+      phone_number: req.body.phone_number,
+      password: req.body.password,
+      consult: req.body.consult,
+    }
+  )
+    .then(() => {
+      console.log('User updated');
+      res.status(200).end();
+    })
+    .catch((err) => {
+      console.log('Error updating: ' + err);
       res.status(400).end();
     });
 });

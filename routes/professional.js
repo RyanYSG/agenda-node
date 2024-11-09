@@ -7,7 +7,17 @@ const router = express.Router();
 const Consult = mongoose.model('Consult');
 const Professional = mongoose.model('Professional');
 
-router.get('/');
+router.get('/', async (req, res) => {
+  await Professional.findOne({ _id: req.body.id })
+    .populate('consults')
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.log('User doesnt exist ' + err);
+      res.status(400).end();
+    });
+});
 
 router.post('/', async (req, res) => {
   const newProfessional = {
@@ -27,6 +37,27 @@ router.post('/', async (req, res) => {
       console.log('Error registering: ' + err);
       res.status(400).end();
     });
+});
+
+router.put('/', async (req, res) => {
+  await Professional.findOneAndUpdate(
+    { _id: req.body.id },
+    {
+      full_name: req.body.full_name,
+      email: req.body.email,
+      phone_number: req.body.phone_number,
+      password: req.body.password,
+      consults: req.body.consults,
+    }
+  ).then(async (professional) => {
+    professional.consults.forEach(async (element) => {
+      console.log(element);
+      await Consult.findOneAndUpdate(
+        { _id: element._id },
+        { professional: professional._id }
+      );
+    });
+  });
 });
 
 router.delete('/', async (req, res) => {
