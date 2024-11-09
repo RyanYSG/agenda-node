@@ -22,13 +22,13 @@ router.post('/consult', async (req, res) => {
   consult.date = req.body.date;
   consult.professional = req.body.professional;
   consult.user = req.body.user;
-  consult.save().then((result) => {
-    Professional.findOne({ _id: consult.professional })
-      .then((professional) => {
+  await consult.save().then(async (result) => {
+    await Professional.findOne({ _id: consult.professional })
+      .then(async (professional) => {
         professional.consults.push(consult);
         professional.save();
 
-        User.findOne({ _id: req.body.user })
+        await User.findOne({ _id: req.body.user })
           .then((user) => {
             user.consult = consult._id;
             user.save();
@@ -48,7 +48,7 @@ router.post('/consult', async (req, res) => {
 });
 
 router.put('/consult', async (req, res) => {
-  Consult.findOneAndUpdate(
+  await Consult.findOneAndUpdate(
     { _id: req.body.id },
     {
       date: req.body.date,
@@ -67,11 +67,11 @@ router.put('/consult', async (req, res) => {
 });
 
 router.delete('/consult', async (req, res) => {
-  Professional.findOneAndUpdate(
+  await Professional.findOneAndUpdate(
     { _id: req.body.professional },
     { $pull: { consults: req.body.id } }
-  ).then(() => {
-    Consult.findByIdAndDelete({ _id: req.body.id })
+  ).then(async () => {
+    await Consult.findByIdAndDelete({ _id: req.body.id })
       .then(() => {
         console.log('Deleted consult');
         res.status(200).end();
