@@ -55,7 +55,15 @@ router.put('/', async (req, res) => {
       await Consult.findOneAndUpdate(
         { _id: element._id },
         { professional: professional._id }
-      );
+      )
+        .then(() => {
+          console.log('Professional update');
+          res.status(200).end();
+        })
+        .catch((err) => {
+          console.log('Couldnt update professional: ' + err);
+          res.status(400).end();
+        });
     });
   });
 });

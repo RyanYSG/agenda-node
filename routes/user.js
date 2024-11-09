@@ -49,15 +49,17 @@ router.put('/', async (req, res) => {
       password: req.body.password,
       consult: req.body.consult,
     }
-  )
-    .then(() => {
-      console.log('User updated');
-      res.status(200).end();
-    })
-    .catch((err) => {
-      console.log('Error updating: ' + err);
-      res.status(400).end();
-    });
+  ).then(async (user) => {
+    await Consult.findOneAndUpdate({ _id: user.consult }, { user: user._id })
+      .then(() => {
+        console.log('User updated');
+        res.status(200).end();
+      })
+      .catch((err) => {
+        console.log('Couldnt update user ' + err);
+        res.status(400).end();
+      });
+  });
 });
 
 router.delete('/', async (req, res) => {
